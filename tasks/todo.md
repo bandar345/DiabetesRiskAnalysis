@@ -65,6 +65,7 @@ Any teammate can take the next task whose dependencies are done. One owner per t
 - [ ] Review with the team before anyone downloads or models
 
 ## Task 3: Load BRFSS into a thin Parquet table
+**Owner:** Latifah
 
 **Description:** Download the 2024 combined landline and cell-phone public-use file from the CDC page in the README. Read it once, keep only the contract columns plus the survey weight and a row id, and save a Parquet file later tasks will use.
 
@@ -91,6 +92,7 @@ Any teammate can take the next task whose dependencies are done. One owner per t
 **Estimated scope:** Medium: 3-5 files
 
 ## Task 4: Write the column dictionary
+**Owner:** Latifah
 
 **Description:** Document every column in the thin table so special codes are not treated as real ages, BMIs, or answers. Include the `_BMI5` scale and the weight variable after checking the codebook.
 
