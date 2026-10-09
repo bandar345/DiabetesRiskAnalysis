@@ -236,6 +236,8 @@ Any teammate can take the next task whose dependencies are done. One owner per t
 
 ## Task 9: Diabetes-type table for respondents with diabetes
 
+**Owner:** Bandar Alshahrani
+
 **Description:** Answer the second half of the project question. Among people who reported diabetes, summarize `DIABTYPE`, only on interviews where the diabetes module was used. Keep this separate from the classifier.
 
 **Acceptance criteria:**
