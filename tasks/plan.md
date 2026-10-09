@@ -2,7 +2,7 @@
 
 ## Overview
 
-Build a reproducible classifier that predicts self-reported diabetes status (no diabetes, prediabetes, or diabetes) from age, BMI, and physical activity in the 2024 CDC BRFSS public file. A second, separate summary answers what diabetes type people with diabetes report. Entry-level teammates each own one task at a time. Shared results live in Python modules and saved files. Notebooks are for exploration and error review only.
+Build a reproducible classifier that predicts self-reported diabetes status (no diabetes, prediabetes, or diabetes) from the main inputs in `reports/contract.md`, using the 2024 CDC BRFSS public file. A second, separate summary answers what diabetes type people with diabetes report. Entry-level teammates each own one task at a time. Shared results live in Python modules and saved files. Notebooks are for exploration and error review only.
 
 This is an analysis of survey self-report. It does not diagnose diabetes and it is not a clinical tool.
 
@@ -21,7 +21,7 @@ Use a small project, not one shared notebook.
 
 Rules that keep a junior team from blocking each other:
 
-1. Agree the contract in Task 2 before anyone fits a model. The contract is the target definition, the columns, and the metric. After that, descriptive work and modeling can proceed on the same table.
+1. Agree the contract in Task 2 before anyone fits a model. The contract defines the target, the main columns, the sample, the metric, and the split. It does not fix the model type. After that, descriptive work and modeling can proceed on the same table.
 2. One task has one owner. A second person reviews the change before the next task depends on it.
 3. A notebook cell is a draft. If another person needs that result, move it into `src/diabetes_risk/` or save a file under `data/` or `reports/` the same day.
 4. Everyone trains and scores on the split file from Task 6. Nobody draws a new random split inside a notebook.
@@ -31,12 +31,13 @@ Rules that keep a junior team from blocking each other:
 ## Architecture Decisions
 
 - **Target.** Three classes from `DIABETE4`: no diabetes, prediabetes, and diabetes. Interviews coded as diabetes only during pregnancy, don't know, refused, or blank stay out of the model. Pregnancy-only diabetes is a different condition from the three statuses in the project question.
-- **Model inputs.** `_AGE80` (age), `_BMI5` (BMI), and `EXERANY2` (any exercise). Height and weight stay in the descriptive analysis. BMI is already computed from height and weight, so putting all three in one model makes the coefficients hard to read.
+- **Main model inputs.** `_AGE80` (age), `_BMI5` (BMI), `EXERANY2` (any exercise), `_SMOKER3` (cigarette smoking status), `USENOW3` (smokeless tobacco), `ECIGNOW3` (e-cigarettes), `_RFDRHV9` (heavy drinking), `SEXVAR` (sex), and `SSBSUGR2` (sugary soda). This is the main list, not a closed one. Another codebook column can be added on the contract page. Height and weight are descriptive columns. `_SMOKER3` is the four-level smoking status calculated from `SMOKE100` and `SMOKDAY2`.
+- **Sample.** The modeling table is 40,000 interviews drawn from rows where sugary soda was asked and the diabetes target is one of the three classes, stratified on that target. The full public file stays in `data/raw/`.
 - **Metric.** Choose the model with macro F1 on the validation split. Report per-class recall beside it. Record accuracy, and do not use it to pick the model: most respondents report no diabetes.
 - **Split.** 60% train, 20% validation, 20% test, stratified on the target, one fixed seed. Selection happens on validation. The test set is scored once for the final write-up.
-- **Models.** A majority-class baseline, then multinomial logistic regression, then one tree model. Keep the model that wins on validation macro F1. No large tuning search.
+- **Models.** Model type is not fixed. A majority-class prediction is the reference. The chosen model is the one with the highest validation macro F1.
 - **Survey weights.** Use the interview weight (expect `_LLCPWT`; confirm the name in the codebook) for the descriptive rates in Tasks 8 and 9. The classifier is scored as a predictor of interview records. The write-up says that plainly so nobody treats unweighted accuracy as a U.S. population rate.
-- **Stack.** Python, pandas, and scikit-learn. Save the thin table as Parquet. Read the SAS transport file once, keep only the contract columns, and do not reload all 345 columns in later tasks.
+- **Stack.** Python. Save the modeling table as Parquet. Read the SAS transport file once.
 
 ## Dependency Graph
 
@@ -44,7 +45,7 @@ Rules that keep a junior team from blocking each other:
 Task 1 layout ─────────────┐
                            ├── Task 3 load thin table ── Task 4 dictionary
 Task 2 contract ───────────┤                                    │
-                           │                                    ├── Task 5 cleaning ── Task 6 split ── Task 10 baseline ── Task 11 comparison
+                           │                                    ├── Task 5 cleaning ── Task 6 split ── Task 10 models ── Task 11 comparison
                            │                                    │         │                                    │
                            │                                    │         ├── Task 7 quality                    ├── Task 12 error review
                            │                                    │         └── Task 8 relationships               └── Task 13 train command
@@ -58,13 +59,13 @@ Tasks 8 and 9 can run at the same time as Task 10 once cleaning exists. Task 9 c
 
 ### Phase 1: Foundation
 
-- [ ] Task 1: Create the project layout
-- [ ] Task 2: Write the analysis contract
+- [x] Task 1: Create the project layout
+- [x] Task 2: Write the analysis contract
 
 ### Checkpoint: Foundation
 
-- [ ] The team has read the contract and agrees on the target, the exclusions, the three model inputs, and macro F1
-- [ ] Folders exist and raw data is listed in `.gitignore`
+- [ ] The team has read the contract and agrees on the target, the exclusions, the main inputs, the 40,000-row sample, macro F1, and that model type is not fixed
+- [x] Folders exist and raw data is listed in `.gitignore`
 
 ### Phase 2: Shared table
 
@@ -92,14 +93,14 @@ Tasks 8 and 9 can run at the same time as Task 10 once cleaning exists. Task 9 c
 
 ### Phase 4: Model
 
-- [ ] Task 10: Majority baseline and logistic regression
-- [ ] Task 11: One tree model and a comparison table
+- [ ] Task 10: Fit models against a majority-class reference
+- [ ] Task 11: Compare models and name the chosen one
 - [ ] Task 12: Error-analysis notebook on saved predictions
 - [ ] Task 13: Single training command for the chosen model
 
 ### Checkpoint: Model
 
-- [ ] The chosen model beats the majority baseline on validation macro F1
+- [ ] The chosen model is the highest validation macro F1, and the comparison says whether it beats the majority-class reference
 - [ ] `python -m diabetes_risk.train` rewrites the model file and `reports/metrics.json`
 - [ ] Test-set metrics are computed once and match the write-up
 
@@ -116,9 +117,9 @@ Tasks 8 and 9 can run at the same time as Task 10 once cleaning exists. Task 9 c
 
 | Risk | Impact | Mitigation |
 | --- | --- | --- |
-| The SAS file has 345 columns and 457,670 rows | High | Task 3 keeps only contract columns and writes Parquet |
+| The SAS file has 345 columns and 457,670 rows | High | Task 3 keeps the main columns and writes a 40,000-row Parquet sample |
 | BRFSS uses 7, 9, 777, 999, and blank as non-answers | High | Dictionary plus tested cleaning functions; notebooks do not reimplement this |
-| `HEIGHT3` and `WEIGHT2` mix feet/inches and meters in one field | High | Model uses CDC's `_BMI5`. Raw height and weight are an audit, not model inputs |
+| `HEIGHT3` and `WEIGHT2` mix feet/inches and meters in one field | High | `_BMI5` is the body-size input. Raw height and weight stay descriptive columns |
 | `_BMI5` is often stored with implied decimals | Med | Dictionary confirms the scale; a test checks a known value |
 | `DIABTYPE` is missing outside the diabetes module | Med | Task 9 restricts to respondents who were asked and reports how many that is |
 | Class imbalance makes accuracy look strong | Med | Macro F1 and per-class recall are the decision metrics |
@@ -128,12 +129,11 @@ Tasks 8 and 9 can run at the same time as Task 10 once cleaning exists. Task 9 c
 
 ## Open Questions
 
-- Confirm in the 2024 codebook: `DIABETE4` and `DIABTYPE` code lists, the `_BMI5` scale, and the weight variable name.
-- Should pregnancy-only diabetes stay excluded, as this plan recommends?
+- Confirm in the 2024 codebook: the `DIABTYPE` code list, the `_BMI5` scale, and the weight variable name. `DIABETE4` codes are defined in `reports/contract.md`.
 
 ## Assumptions
 
-1. The finished product is a classical classifier plus a short written answer, not a web app.
+1. The finished product is a classifier plus a short written answer, not a web app.
 2. The label is self-reported `DIABETE4`, not a lab result.
-3. The team is entry-level, so the model set stays at a majority baseline, logistic regression, and one tree model.
+3. Model type is not fixed. A majority-class prediction is the reference, and validation macro F1 names the chosen model.
 4. There is no calendar. Order follows the dependencies above. Tasks 8 and 9 can proceed beside modeling after Task 5.

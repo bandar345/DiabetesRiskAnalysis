@@ -10,15 +10,15 @@ Any teammate can take the next task whose dependencies are done. One owner per t
 
 **Acceptance criteria:**
 
-- [ ] These folders exist: `data/raw/`, `data/processed/`, `notebooks/`, `src/diabetes_risk/`, `tests/`, `reports/figures/`, `models/`
-- [ ] `src/diabetes_risk/__init__.py` exists so the training code can be imported
-- [ ] `.gitignore` ignores `data/raw/`, `data/processed/`, and `models/`
-- [ ] README gains a "Layout" section that points to `tasks/plan.md` and states that notebooks are for exploration and `src/diabetes_risk/` is for shared code
+- [x] These folders exist: `data/raw/`, `data/processed/`, `notebooks/`, `src/diabetes_risk/`, `tests/`, `reports/figures/`, `models/`
+- [x] `src/diabetes_risk/__init__.py` exists so the training code can be imported
+- [x] `.gitignore` ignores `data/raw/`, `data/processed/`, and `models/`
+- [x] README gains a "Layout" section that points to `tasks/plan.md` and states that notebooks are for exploration and `src/diabetes_risk/` is for shared code
 
 **Verification:**
 
-- [ ] Manual check: a dummy file placed in `data/raw/` does not show up as a file git would track (`git check-ignore -v data/raw/dummy` once git is in use)
-- [ ] Manual check: another person can tell from the README where to put a new notebook versus a shared function
+- [x] Manual check: a dummy file placed in `data/raw/` does not show up as a file git would track (`git check-ignore -v data/raw/dummy` once git is in use)
+- [x] Manual check: another person can tell from the README where to put a new notebook versus a shared function
 
 **Dependencies:** None
 
@@ -34,21 +34,23 @@ Any teammate can take the next task whose dependencies are done. One owner per t
 
 **Owner:** Abdulaziz
 
-**Description:** Write a one-page contract the whole team follows. It defines the three-class target, who is excluded, which columns the model may use, the metric, and the split sizes. Later tasks implement this page; they do not renegotiate it inside a notebook.
+**Description:** Write a contract the whole team follows. It defines the three-class target, who is excluded, the main columns, the sample, the metric, and the split sizes. It does not fix the model type. Later tasks follow this page.
 
 **Acceptance criteria:**
 
-- [ ] `reports/contract.md` maps `DIABETE4` codes to `no_diabetes`, `prediabetes`, and `diabetes`, and lists the codes left out (pregnancy-only, don't know, refused, blank), using the 2024 codebook
-- [ ] Model inputs are only age (`_AGE80`), BMI (`_BMI5`), and any exercise (`EXERANY2`)
-- [ ] Height (`HEIGHT3`) and weight (`WEIGHT2`) are marked descriptive-only
-- [ ] The decision metric is validation macro F1, with per-class recall reported beside it
-- [ ] Split is 60% train, 20% validation, 20% test, stratified on the target
-- [ ] The page states the model predicts interview responses and is not a diagnosis
+- [x] `reports/contract.md` maps `DIABETE4` codes to `no_diabetes`, `prediabetes`, and `diabetes`, and lists the codes left out (pregnancy-only, don't know, refused, blank), using the 2024 codebook
+- [x] Main model inputs are age (`_AGE80`), BMI (`_BMI5`), any exercise (`EXERANY2`), smoking status (`_SMOKER3`), smokeless tobacco (`USENOW3`), e-cigarettes (`ECIGNOW3`), heavy drinking (`_RFDRHV9`), sex (`SEXVAR`), and sugary soda (`SSBSUGR2`). The list is not closed.
+- [x] Height (`HEIGHT3`) and weight (`WEIGHT2`) are marked descriptive-only
+- [x] The decision metric is validation macro F1, with per-class recall reported beside it
+- [x] Split is 60% train, 20% validation, 20% test, stratified on the target
+- [x] The modeling table is 40,000 interviews with `DIABETE4` in {1, 3, 4} and a real `SSBSUGR2` answer, stratified on the target
+- [x] Model type is not fixed. The reference predicts the majority class, and the chosen model is the highest validation macro F1
+- [x] The page states the model predicts interview responses and is not a diagnosis
 
 **Verification:**
 
-- [ ] Manual check: every teammate can point to the target definition and the metric without opening a notebook
-- [ ] Manual check: code lists match the 2024 BRFSS codebook, not memory
+- [x] Manual check: every teammate can point to the target definition and the metric without opening a notebook
+- [x] Manual check: code lists match the 2024 BRFSS codebook, not memory
 
 **Dependencies:** None. Can be written beside Task 1.
 
@@ -60,20 +62,20 @@ Any teammate can take the next task whose dependencies are done. One owner per t
 
 ## Checkpoint: Foundation
 
-- [ ] The team has read `reports/contract.md` and agrees on the target, the exclusions, the three model inputs, and macro F1
-- [ ] Folders from Task 1 exist and raw data is gitignored
+- [ ] The team has read `reports/contract.md` and agrees on the target, the exclusions, the main inputs, the 40,000-row sample, macro F1, and that model type is not fixed
+- [x] Folders from Task 1 exist and raw data is gitignored
 - [ ] Review with the team before anyone downloads or models
 
 ## Task 3: Load BRFSS into a thin Parquet table
 
-**Description:** Download the 2024 combined landline and cell-phone public-use file from the CDC page in the README. Read it once, keep only the contract columns plus the survey weight and a row id, and save a Parquet file later tasks will use.
+**Description:** Download the 2024 combined landline and cell-phone public-use file from the CDC page in the README. Read it once, keep the main contract columns plus the survey weight and a row id, draw the 40,000-row sample defined in `reports/contract.md`, and save a Parquet file later tasks will use.
 
 **Acceptance criteria:**
 
 - [ ] `data/raw/` holds the original SAS transport file, unmodified
 - [ ] A script writes `data/processed/brfss2024_thin.parquet`
-- [ ] The Parquet file contains only: a row id, `DIABETE4`, `DIABTYPE`, `_AGE80`, `HEIGHT3`, `WEIGHT2`, `_BMI5`, `EXERANY2`, and the weight column named in the codebook
-- [ ] The script prints row count and column names, and the row count matches the file (457,670 interviews unless the codebook states otherwise)
+- [ ] The Parquet file contains: a row id, `DIABETE4`, `DIABTYPE`, `_AGE80`, `HEIGHT3`, `WEIGHT2`, `_BMI5`, `EXERANY2`, `_SMOKER3`, `USENOW3`, `ECIGNOW3`, `_RFDRHV9`, `SEXVAR`, `SSBSUGR2`, and the weight column named in the codebook
+- [ ] The script prints row count and column names, and the row count is 40,000
 - [ ] README says the download URL and the command that rebuilds the Parquet file
 
 **Verification:**
@@ -120,9 +122,9 @@ Any teammate can take the next task whose dependencies are done. One owner per t
 
 **Acceptance criteria:**
 
-- [ ] `prepare_table` returns a dataframe with `target` in {`no_diabetes`, `prediabetes`, `diabetes`} and model columns `age`, `bmi`, `any_exercise`
+- [ ] `prepare_table` returns a dataframe with `target` in {`no_diabetes`, `prediabetes`, `diabetes`} and main model columns `age`, `bmi`, `any_exercise`, `smoker_status`, `smokeless_tobacco`, `ecigarette`, `heavy_drinker`, `sex`, `sugar_drinks`
 - [ ] Pregnancy-only, don't know, refused, and blank `DIABETE4` values are not assigned a target class
-- [ ] Non-answer codes for age, BMI, and exercise become missing
+- [ ] Non-answer codes for every model input become missing, using the code lists in `reports/contract.md`
 - [ ] Tests cover at least: a yes/no/prediabetes mapping, a pregnancy-only row left unlabeled, a refused BMI becoming missing, and the BMI scale example from the dictionary
 - [ ] No notebook contains a second copy of these rules
 
@@ -149,7 +151,7 @@ Any teammate can take the next task whose dependencies are done. One owner per t
 
 - [ ] `data/processed/split.csv` has `row_id` and `split` (`train`, `validation`, `test`)
 - [ ] Shares are 60/20/20 within a rounding tolerance of one percentage point, and each split's target mix matches the overall mix within one percentage point
-- [ ] The seed and the fractions live in one config module named by the contract
+- [ ] The seed, the split fractions, and the 40,000-row sample size live in one config module named by the contract
 - [ ] Calling the split function twice on the same input returns the same ids
 
 **Verification:**
@@ -258,16 +260,16 @@ Any teammate can take the next task whose dependencies are done. One owner per t
 - [ ] Weighted figures name the weight column
 - [ ] Review with the team. The written question is answerable even before the model is strong
 
-## Task 10: Majority baseline and logistic regression
+## Task 10: Fit models against a majority-class reference
 
-**Description:** Fit two models on the train split only: predict the most common class, and a multinomial logistic regression on age, BMI, and exercise. Score both on the validation split. Fit only on rows with non-missing model inputs.
+**Description:** Fit a majority-class reference and any other classifiers on the train split, using the main inputs named in `reports/contract.md`. Model type is not fixed. Score every model on the validation split. Record how many rows were fit and how many were left out.
 
 **Acceptance criteria:**
 
 - [ ] Training rows come from `split == train` joined to the cleaned table
-- [ ] Validation metrics for both models are written to `reports/metrics_validation.csv` with macro F1 and per-class recall
-- [ ] The logistic model is saved under `models/`
-- [ ] Rows with a missing age, BMI, or exercise are excluded and the excluded count is recorded
+- [ ] `reports/metrics_validation.csv` has one row per model, including the majority-class reference, with macro F1 and per-class recall
+- [ ] Each fitted model is saved under `models/`
+- [ ] The metrics record how many rows were fit and how many were left out
 - [ ] The test split is not read
 
 **Verification:**
@@ -286,21 +288,20 @@ Any teammate can take the next task whose dependencies are done. One owner per t
 
 **Estimated scope:** Medium: 3-5 files
 
-## Task 11: One tree model and a comparison table
+## Task 11: Compare models and name the chosen one
 
-**Description:** Fit one tree ensemble (random forest or gradient boosting) with the same features, rows, and validation metric as Task 10. Compare it with the baseline and the logistic model. Keep the validation winner as the chosen model.
+**Description:** Compare the models from Task 10 on the same rows, main inputs, and validation metric. Further models may be added. Model type is not fixed. The chosen model is the one with the highest validation macro F1.
 
 **Acceptance criteria:**
 
-- [ ] The tree model uses the same train rows and the same three inputs
-- [ ] `reports/model_comparison.md` lists majority, logistic, and tree macro F1 on validation, and names the winner
-- [ ] Hyperparameters are the library defaults, or a grid of at most nine combinations scored on validation
+- [ ] Every compared model uses the same train rows and the same main inputs
+- [ ] `reports/model_comparison.md` lists each model, including the majority-class reference, with validation macro F1, and names the chosen model
 - [ ] The test split is still unread
 
 **Verification:**
 
 - [ ] Manual check: the comparison table matches `reports/metrics_validation.csv`
-- [ ] Manual check: the winner's macro F1 is greater than the majority baseline; if it is not, the write-up says so and the baseline stays the chosen model
+- [ ] Manual check: the chosen model is the highest validation macro F1; if that is the majority-class reference, the write-up says so
 
 **Dependencies:** Task 10
 
@@ -314,14 +315,14 @@ Any teammate can take the next task whose dependencies are done. One owner per t
 
 ## Task 12: Error-analysis notebook on saved predictions
 
-**Description:** Look at where the chosen model is wrong. Slice validation errors by age band, BMI band, and exercise. The notebook loads saved predictions. It does not fit a new model or draw a new split.
+**Description:** Look at where the chosen model is wrong. Slice validation errors by age band, BMI band, and exercise. The notebook reviews the saved predictions for the chosen model.
 
 **Acceptance criteria:**
 
 - [ ] `notebooks/03_error_analysis.ipynb` reads predictions written by the training code
 - [ ] `reports/error_analysis.md` names the slices with the weakest recall
 - [ ] Figures for those slices are saved under `reports/figures/`
-- [ ] The notebook does not call `fit`
+- [ ] The error review uses the saved predictions for the chosen model
 
 **Verification:**
 
@@ -367,7 +368,7 @@ Any teammate can take the next task whose dependencies are done. One owner per t
 
 ## Checkpoint: Model
 
-- [ ] The chosen model beats the majority baseline on validation macro F1, or the comparison page explains that it does not
+- [ ] The chosen model is the highest validation macro F1, and the comparison says whether it beats the majority-class reference
 - [ ] `python -m diabetes_risk.train` rewrites the model and `reports/metrics.json`
 - [ ] Test metrics are produced once, with the flag, and set aside for Task 14
 - [ ] Review with the team before writing the results page
@@ -378,7 +379,7 @@ Any teammate can take the next task whose dependencies are done. One owner per t
 
 **Acceptance criteria:**
 
-- [ ] `reports/results.md` covers: the question, the 2024 BRFSS source, the target and exclusions, the three inputs, the chosen model, validation and one-time test macro F1, and the diabetes-type result
+- [ ] `reports/results.md` covers: the question, the 2024 BRFSS source, the target and exclusions, the 40,000-row sample, the main inputs, the chosen model, validation and one-time test macro F1, and the diabetes-type result
 - [ ] Limitations include: self-report rather than a lab test, not a diagnosis, pregnancy-only diabetes excluded, `DIABTYPE` only where the module was asked, descriptive rates are weighted and model scores are not population prevalence
 - [ ] README links to `reports/results.md` and to the training command
 - [ ] Numbers match `reports/metrics.json`, `reports/relationships.md`, and `reports/diabetes_type.md`

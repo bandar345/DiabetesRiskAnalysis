@@ -17,6 +17,8 @@ How do age, height, weight, BMI, and physical activity relate to self-reported d
 
 The diabetes status question is `DIABETE4` (yes, only during pregnancy, no, or prediabetes/borderline). Diabetes type is `DIABTYPE` and was asked only in states that used the diabetes module. Age, height, weight, BMI, and activity are in the same file (`_AGE80`, `HEIGHT3`, `WEIGHT2`, `_BMI5`, `EXERANY2`). The file does not ask whether a relative has diabetes.
 
+The main model inputs are listed in [reports/contract.md](reports/contract.md). Besides age, BMI, and exercise, they include cigarette smoking (`_SMOKER3`), smokeless tobacco (`USENOW3`), e-cigarettes (`ECIGNOW3`), heavy drinking (`_RFDRHV9`), sex (`SEXVAR`), and sugary soda (`SSBSUGR2`). That list is the starting set, not a closed one. The modeling table is a 40,000-interview sample from people who were asked the soda question and who have one of the three diabetes classes. The public file itself still has 457,670 interviews.
+
 The data are a U.S. government work in the public domain. Cite CDC when the results are shared.
 
 ## 3. Team members
@@ -25,4 +27,21 @@ The data are a U.S. government work in the public domain. Cite CDC when the resu
 
 ## 4. Status
 
-Dataset selected. the analysis has not started.
+Dataset selected. The project layout and the analysis contract are in place. Modeling has not started.
+
+## 5. Layout
+
+The implementation plan is in [tasks/plan.md](tasks/plan.md). The analysis contract is in [reports/contract.md](reports/contract.md). It defines the target, the main inputs, the 40,000-row sample, the metric, and the split. It does not fix the model type.
+
+Notebooks are for exploration. Shared code belongs in `src/diabetes_risk/`.
+
+| Place | What goes here |
+| --- | --- |
+| `notebooks/` | A new notebook: plots, questions, and error review |
+| `src/diabetes_risk/` | A new shared function: loading, cleaning, the split, training, and evaluation |
+| `data/raw/` | The CDC file, unchanged. Git ignores this folder. |
+| `data/processed/` | Tables produced by scripts. Git ignores this folder. |
+| `reports/` | The contract, tables, and the short write-up |
+| `reports/figures/` | Saved figures |
+| `models/` | Saved models. Git ignores this folder. |
+| `tests/` | Tests for shared code |
