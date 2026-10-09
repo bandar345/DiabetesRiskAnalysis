@@ -25,6 +25,7 @@ The data are a U.S. government work in the public domain. Cite CDC when the resu
 
 - Abdulaziz -/owAziz
 - Latifah Alsulihem -/ISLatifahAlsulihem
+- Bandar Alshahrani -/bandar345
 
 ## 4. Status
 
