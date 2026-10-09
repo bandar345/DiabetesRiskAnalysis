@@ -73,16 +73,16 @@ Any teammate can take the next task whose dependencies are done. One owner per t
 
 **Acceptance criteria:**
 
-- [ ] `data/raw/` holds the original SAS transport file, unmodified
-- [ ] A script writes `data/processed/brfss2024_thin.parquet`
-- [ ] The Parquet file contains: a row id, `DIABETE4`, `DIABTYPE`, `_AGE80`, `HEIGHT3`, `WEIGHT2`, `_BMI5`, `EXERANY2`, `_SMOKER3`, `USENOW3`, `ECIGNOW3`, `_RFDRHV9`, `SEXVAR`, `SSBSUGR2`, and the weight column named in the codebook
-- [ ] The script prints row count and column names, and the row count is 40,000
-- [ ] README says the download URL and the command that rebuilds the Parquet file
+- [x] `data/raw/` holds the original SAS transport file, unmodified
+- [x] A script writes `data/processed/brfss2024_thin.parquet`
+- [x] The Parquet file contains: a row id, `DIABETE4`, `DIABTYPE`, `_AGE80`, `HEIGHT3`, `WEIGHT2`, `_BMI5`, `EXERANY2`, `_SMOKER3`, `USENOW3`, `ECIGNOW3`, `_RFDRHV9`, `SEXVAR`, `SSBSUGR2`, and the weight column named in the codebook
+- [x] The script prints row count and column names, and the row count is 40,000
+- [x] README says the download URL and the command that rebuilds the Parquet file
 
 **Verification:**
 
-- [ ] Manual check: rerunning the script replaces the Parquet file and prints the same row count
-- [ ] Manual check: the Parquet schema does not include the other BRFSS columns
+- [x] Manual check: rerunning the script replaces the Parquet file and prints the same row count
+- [x] Manual check: the Parquet schema does not include the other BRFSS columns
 
 **Dependencies:** Task 1, Task 2
 
