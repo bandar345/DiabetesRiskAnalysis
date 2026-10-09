@@ -64,7 +64,7 @@ Tasks 8 and 9 can run at the same time as Task 10 once cleaning exists. Task 9 c
 
 ### Checkpoint: Foundation
 
-- [ ] The team has read the contract and agrees on the target, the exclusions, the main inputs, the 40,000-row sample, macro F1, and that model type is not fixed
+- [x] The team has read the contract and agrees on the target, the exclusions, the main inputs, the 40,000-row sample, macro F1, and that model type is not fixed
 - [x] Folders exist and raw data is listed in `.gitignore`
 
 ### Phase 2: Shared table

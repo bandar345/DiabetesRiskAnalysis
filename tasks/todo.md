@@ -62,9 +62,9 @@ Any teammate can take the next task whose dependencies are done. One owner per t
 
 ## Checkpoint: Foundation
 
-- [ ] The team has read `reports/contract.md` and agrees on the target, the exclusions, the main inputs, the 40,000-row sample, macro F1, and that model type is not fixed
+- [x] The team has read `reports/contract.md` and agrees on the target, the exclusions, the main inputs, the 40,000-row sample, macro F1, and that model type is not fixed
 - [x] Folders from Task 1 exist and raw data is gitignored
-- [ ] Review with the team before anyone downloads or models
+- [x] Review with the team before anyone downloads or models
 
 ## Task 3: Load BRFSS into a thin Parquet table
 **Owner:** Latifah
