@@ -16,12 +16,12 @@ This document details every column extracted into `data/processed/brfss2024_thin
 | **`WEIGHT2`** | Reported weight (mixed metric and imperial encoding) | Pounds (0050-0999) or kilograms (9000-9998) | 7777 (Don't know), 9999 (Refused), Blank/NaN | No (Descriptive / audit only) |
 | **`_BMI5`** | Computed Body Mass Index (BMI) | Real values approx. 12.00 to 99.99 (stored with 2 implied decimal places) | Blank/NaN (raw values >= 9999 or missing in survey) | **Yes** (Model Feature) |
 | **`EXERANY2`** | Exercise in past 30 days (other than regular job) | 1 (Yes), 2 (No) | 7 (Don't know/Not Sure), 9 (Refused), Blank/NaN | **Yes** (Model Feature) |
-| **`_SMOKER3`** | Four-level smoker status | 1 (Current daily), 2 (Current some days), 3 (Former), 4 (Never) | 9 (Don't know/Refused/Missing), Blank/NaN | No (Contract limited to Age, BMI, Exercise) |
-| **`USENOW3`** | Smokeless tobacco use | 1 (Every day), 2 (Some days), 3 (Not at all) | 7 (Don't know/Not Sure), 9 (Refused), Blank/NaN | No (Contract limited to Age, BMI, Exercise) |
-| **`ECIGNOW3`** | E-cigarette or vaping device usage | 1 (Every day), 2 (Some days), 3 (Not at all) | 7 (Don't know/Not Sure), 9 (Refused), Blank/NaN | No (Contract limited to Age, BMI, Exercise) |
-| **`_RFDRHV9`** | Heavy alcohol consumption calculated variable | 1 (No: <=14 drinks/wk men, <=7 women), 2 (Yes: >14 drinks/wk men, >7 women) | 9 (Don't know/Refused/Missing), Blank/NaN | No (Contract limited to Age, BMI, Exercise) |
-| **`SEXVAR`** | Sex of respondent | 1 (Male), 2 (Female) | None / Refused recorded in raw questions | No (Descriptive / stratification) |
-| **`SSBSUGR2`** | Sugar-sweetened beverages consumption frequency | Categorical frequency (drinks per day/week/month) | 777 (Don't know), 999 (Refused), Blank/NaN | No (Descriptive only) |
+| **`_SMOKER3`** | Four-level smoker status | 1 (Current daily), 2 (Current some days), 3 (Former), 4 (Never) | 9 (Don't know/Refused/Missing), Blank/NaN | **Yes** (Model Feature) |
+| **`USENOW3`** | Smokeless tobacco use | 1 (Every day), 2 (Some days), 3 (Not at all) | 7 (Don't know/Not Sure), 9 (Refused), Blank/NaN | **Yes** (Model Feature) |
+| **`ECIGNOW3`** | E-cigarette or vaping device usage | 1 (Never used), 2 (Every day), 3 (Some days), 4 (Used in the past) | 7 (Don't know/Not Sure), 9 (Refused), Blank/NaN | **Yes** (Model Feature) |
+| **`_RFDRHV9`** | Heavy alcohol consumption calculated variable | 1 (No: <=14 drinks/wk men, <=7 women), 2 (Yes: >14 drinks/wk men, >7 women) | 9 (Don't know/Refused/Missing), Blank/NaN | **Yes** (Model Feature) |
+| **`SEXVAR`** | Sex of respondent | 1 (Male), 2 (Female) | None / Refused recorded in raw questions | **Yes** (Model Feature) |
+| **`SSBSUGR2`** | Sugar-sweetened beverages consumption frequency | 101–399 or 888 (kept answers) | 777 (Don't know), 999 (Refused), Blank/NaN | **Yes** (Model Feature) |
 | **`_LLCPWT`** | Final survey sample weight variable | Positive float values (sampling weight for population representation) | None | No (Used for weighted statistics & descriptive charts) |
 
 ---
