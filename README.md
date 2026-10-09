@@ -24,6 +24,7 @@ The data are a U.S. government work in the public domain. Cite CDC when the resu
 ## 3. Team members
 
 - Abdulaziz -/owAziz
+- Latifah Alsulihem -/ISLatifahAlsulihem
 
 ## 4. Status
 
