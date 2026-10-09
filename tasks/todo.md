@@ -100,15 +100,15 @@ Any teammate can take the next task whose dependencies are done. One owner per t
 
 **Acceptance criteria:**
 
-- [ ] `reports/data_dictionary.md` has one row per thin-table column: meaning, valid values, codes that mean missing or refused, and whether the model may use it
-- [ ] `_BMI5` scale is confirmed (raw value versus implied decimals) with one worked example
-- [ ] `DIABTYPE` notes that the question was asked only in states that fielded the diabetes module
-- [ ] Weight column name matches the codebook
+- [x] `reports/data_dictionary.md` has one row per thin-table column: meaning, valid values, codes that mean missing or refused, and whether the model may use it
+- [x] `_BMI5` scale is confirmed (raw value versus implied decimals) with one worked example
+- [x] `DIABTYPE` notes that the question was asked only in states that fielded the diabetes module
+- [x] Weight column name matches the codebook
 
 **Verification:**
 
-- [ ] Manual check: each special code listed in the dictionary is visible in a value-count of the Parquet column
-- [ ] Manual check: a teammate who did not load the file can clean a column using only this dictionary
+- [x] Manual check: each special code listed in the dictionary is visible in a value-count of the Parquet column
+- [x] Manual check: a teammate who did not load the file can clean a column using only this dictionary
 
 **Dependencies:** Task 2, Task 3
 
