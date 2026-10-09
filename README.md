@@ -46,3 +46,9 @@ Notebooks are for exploration. Shared code belongs in `src/diabetes_risk/`.
 | `reports/figures/` | Saved figures |
 | `models/` | Saved models. Git ignores this folder. |
 | `tests/` | Tests for shared code |
+
+## Data Loading
+- Raw Data Source: [CDC 2024 BRFSS Data](https://www.cdc.gov/brfss/annual_data/annual_2024.html)
+- To build the thin Parquet table, place `LLCP2024.XPT` in `data/raw/` and run:
+```bash
+python src/diabetes_risk/load.py
