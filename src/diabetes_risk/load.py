@@ -15,6 +15,12 @@ REQUIRED_COLUMNS = [
     "WEIGHT2",
     "_BMI5",
     "EXERANY2",
+    "_SMOKER3",
+    "USENOW3",
+    "ECIGNOW3",
+    "_RFDRHV9",
+    "SEXVAR",
+    "SSBSUGR2",
     "_LLCPWT"
 ]
 
@@ -24,17 +30,22 @@ def load_and_save_thin_table():
     xpt_files = [f for f in xpt_files if f.is_file() and not f.name.startswith('.')]
     
     if not xpt_files:
-        raise FileNotFoundError(f"لم يتم العثور على أي ملف XPT داخل المجلد: {RAW_DIR}")
-
+        raise FileNotFoundError(f"داخل المجلد XPT لم يتم العثور على أي ملف :{RAW_DIR}")
+        
     target_file = xpt_files[0]
     print(f"تم العثور على الملف: {target_file.name}")
-    print("جاري قراءة البيانات، يرجى الانتظار ثوانٍ...")
+    print("...جاري قراءة البيانات، يرجى الانتظار ثوانٍ")
     
     df_raw = pd.read_sas(str(target_file), format="xport", encoding="latin-1")
     df_raw.columns = [col.upper() for col in df_raw.columns]
     
     cols_to_keep = [col.upper() for col in REQUIRED_COLUMNS]
     df_thin = df_raw[cols_to_keep].copy()
+    
+    # أخذ أول 40,000 صف وفق متطلبات الـ Acceptance criteria
+    if len(df_thin) > 40000:
+        df_thin = df_thin.iloc[:40000].copy()
+        
     df_thin.insert(0, "row_id", range(1, len(df_thin) + 1))
     
     os.makedirs(PROCESSED_DATA_PATH.parent, exist_ok=True)
