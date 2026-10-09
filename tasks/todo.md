@@ -242,15 +242,15 @@ Any teammate can take the next task whose dependencies are done. One owner per t
 
 **Acceptance criteria:**
 
-- [ ] The table is limited to `DIABETE4` diabetes and to rows where `DIABTYPE` was actually asked
-- [ ] Counts and weighted percents are saved to `reports/diabetes_type.csv` for each type code, including don't know and refused
-- [ ] `reports/diabetes_type.md` states how many interviews were excluded because the module was not fielded
-- [ ] The type labels match the codebook
+- [x] The table is limited to `DIABETE4` diabetes and to rows where `DIABTYPE` was actually asked
+- [x] Counts and weighted percents are saved to `reports/diabetes_type.csv` for each type code, including don't know and refused
+- [x] `reports/diabetes_type.md` states how many interviews were excluded because the module was not fielded
+- [x] The type labels match the codebook
 
 **Verification:**
 
-- [ ] Manual check: unweighted counts in the CSV equal a direct filter of the thin table
-- [ ] Manual check: the note does not describe type shares as a share of all 457,670 interviews
+- [x] Manual check: unweighted counts in the CSV equal a direct filter of the thin table
+- [x] Manual check: the note does not describe type shares as a share of all 457,670 interviews
 
 **Dependencies:** Task 3, Task 4. Can run beside Tasks 7 and 8.
 
