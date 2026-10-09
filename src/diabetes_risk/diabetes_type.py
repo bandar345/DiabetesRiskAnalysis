@@ -30,6 +30,15 @@ DIABTYPE_LABELS = {
     9: "Refused",
 }
 
+# Full-file DIABTYPE results from the 2024 codebook, for comparison in the note.
+# (count, weighted percent) over all 457,670 interviews.
+CODEBOOK_FULL_FILE = {
+    1: (1236, 9.90),
+    2: (11301, 80.10),
+    7: (1243, 9.70),
+    9: (38, 0.31),
+}
+
 
 def diabetes_type_table(df):
     """Return (table, counts) for respondents with DIABETE4 == 1 who were asked DIABTYPE.
@@ -68,9 +77,15 @@ def write_note(table, counts, path):
     lines = [
         "# Diabetes type among respondents with diabetes",
         "",
-        "Source: CDC BRFSS 2024 combined landline and cell phone file, thin table from Task 3.",
+        "Source: CDC BRFSS 2024 combined landline and cell phone file, thin table from Task 3 "
+        "(`data/processed/brfss2024_thin.parquet`).",
         "",
         "## Who is in the table",
+        "",
+        "The thin table is the 40,000-interview modeling sample defined in `reports/contract.md`: "
+        "interviews with `DIABETE4` in {1, 3, 4} and a real sugary-soda answer (`SSBSUGR2`). "
+        "Sugary soda and diabetes type are both optional modules, so this table only covers "
+        "respondents from states that asked both.",
         "",
         f"- Interviews in the thin table: {counts['all_interviews']:,}",
         f"- Reported diabetes (`DIABETE4` = 1): {counts['with_diabetes']:,}",
@@ -92,13 +107,32 @@ def write_note(table, counts, path):
     lines += [
         "",
         "Full numbers are in [diabetes_type.csv](diabetes_type.csv). "
-        "Counts and weighted percents match the `DIABTYPE` entry in the 2024 codebook (`USCODE24_LLCP_082125`). "
         "The 2024 codebook has no \"other type\" code.",
+        "",
+        "## Comparison with the full public file",
+        "",
+        "The 2024 codebook (`USCODE24_LLCP_082125`) reports `DIABTYPE` over all 457,670 interviews. "
+        "Use it to judge how far the sample result can be trusted.",
+        "",
+        "| Code | Type | Sample count | Sample weighted percent | Codebook count | Codebook weighted percent |",
+        "| --- | --- | --- | --- | --- | --- |",
+    ]
+    for row in table.itertuples():
+        full_count, full_percent = CODEBOOK_FULL_FILE[row.code]
+        lines.append(
+            f"| {row.code} | {row.label} | {row.count:,} | {row.weighted_percent:.2f}% "
+            f"| {full_count:,} | {full_percent:.2f}% |"
+        )
+    lines += [
         "",
         "## Limits",
         "",
         "- Type is self-reported in a phone interview, not a lab result.",
         "- Only states that used the optional diabetes module asked `DIABTYPE`.",
+        "- The sample has few respondents per type, so its percents move more than the full-file "
+        "percents. Type 1 is the smallest group.",
+        "- Weighted percents describe respondents in the sample who were asked the type question. "
+        "They are not U.S. population rates.",
     ]
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
